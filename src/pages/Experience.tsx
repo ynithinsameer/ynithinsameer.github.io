@@ -1,8 +1,9 @@
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import ExperienceCard, { Experience } from "@/components/ExperienceCard";
+import { Experience } from "@/components/ExperienceCard";
 import ExperienceDetail from "@/components/ExperienceDetail";
+import { ChevronRight, Briefcase } from "lucide-react";
 
 const experiences: Experience[] = [
   {
@@ -49,6 +50,27 @@ const experiences: Experience[] = [
 
 const ExperiencePage = () => {
   const [activeExperience, setActiveExperience] = useState<Experience | null>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  
+  // Handle smooth scroll when clicking a timeline item
+  useEffect(() => {
+    if (activeExperience && timelineRef.current) {
+      const element = document.getElementById(`exp-${activeExperience.id}`);
+      if (element) {
+        const container = timelineRef.current;
+        const elementRect = element.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        
+        // Calculate the scroll position to center the element
+        const scrollLeft = element.offsetLeft - (container.clientWidth / 2) + (element.clientWidth / 2);
+        
+        container.scrollTo({
+          left: scrollLeft,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [activeExperience]);
   
   return (
     <div className="min-h-screen pt-24 pb-16">
@@ -62,55 +84,125 @@ const ExperiencePage = () => {
           <h1 className="text-3xl font-bold mb-4">Work Experience</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             My professional journey in machine learning and data science.
-            Click on a card to view detailed information.
+            Select an experience to view details.
           </p>
         </motion.div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Left side: Experience cards */}
-          <motion.div 
-            className={`space-y-4 ${activeExperience ? "md:col-span-1" : "md:col-span-3"}`}
-            layout
-            transition={{ type: "spring", damping: 20, stiffness: 100 }}
+        {/* Timeline View */}
+        <div className="mb-16">
+          <div 
+            ref={timelineRef}
+            className="relative flex overflow-x-auto pb-12 hide-scrollbar"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {experiences.map((exp) => (
-              <motion.div 
-                key={exp.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                layout
-              >
-                <ExperienceCard
-                  experience={exp}
-                  isActive={activeExperience?.id === exp.id}
-                  onClick={() => {
-                    if (activeExperience?.id === exp.id) {
-                      setActiveExperience(null);
-                    } else {
-                      setActiveExperience(exp);
-                    }
-                  }}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
-          
-          {/* Right side: Experience details */}
-          <AnimatePresence>
-            {activeExperience && (
-              <motion.div 
-                className="md:col-span-2 bg-card rounded-lg p-6 border"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 50 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ExperienceDetail experience={activeExperience} />
-              </motion.div>
-            )}
-          </AnimatePresence>
+            {/* Main timeline line */}
+            <div className="absolute h-0.5 bg-muted top-[70px] left-0 right-0 z-0"></div>
+            
+            {/* Timeline items */}
+            <div className="flex space-x-12 px-8 min-w-max">
+              {experiences.map((exp, index) => (
+                <motion.div
+                  id={`exp-${exp.id}`}
+                  key={exp.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className={`relative mt-4 w-[220px] cursor-pointer smoother-transition ${
+                    activeExperience?.id === exp.id 
+                      ? "scale-105" 
+                      : "hover:scale-102"
+                  }`}
+                  onClick={() => setActiveExperience(activeExperience?.id === exp.id ? null : exp)}
+                >
+                  {/* Year marker */}
+                  <div className="text-sm font-medium mb-3">{exp.period}</div>
+                  
+                  {/* Timeline dot with pulse effect */}
+                  <div className="absolute -top-[13px] left-0 z-10">
+                    <motion.div 
+                      className={`w-6 h-6 rounded-full flex items-center justify-center
+                                ${activeExperience?.id === exp.id 
+                                  ? "bg-primary" 
+                                  : "bg-muted/80 hover:bg-primary/50"
+                                } smoother-transition`}
+                      whileHover={{ scale: 1.2 }}
+                    >
+                      <Briefcase className="w-3 h-3 text-background" />
+                    </motion.div>
+                    
+                    {/* Vertical line connecting to card */}
+                    <div className="w-0.5 h-8 bg-muted/60 ml-[11px]"></div>
+                  </div>
+                  
+                  {/* Experience card */}
+                  <div 
+                    className={`p-4 rounded-lg border smoother-transition
+                              ${activeExperience?.id === exp.id 
+                                ? "border-primary shadow-md bg-primary/5" 
+                                : "border-muted hover:border-primary/30"
+                              }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="bg-muted/30 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 mt-1">
+                        {exp.logo ? (
+                          <img src={exp.logo} alt={exp.company} className="w-6 h-6 object-contain" />
+                        ) : (
+                          <div className="w-6 h-6 bg-primary/20 rounded-full" />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-base">{exp.position}</h3>
+                        <p className="text-sm text-muted-foreground">{exp.company}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-3 text-xs text-muted-foreground">{exp.description}</div>
+                    
+                    <div className="mt-3 flex flex-wrap gap-1">
+                      {exp.skills.slice(0, 3).map(skill => (
+                        <span key={skill} className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted/50">
+                          {skill}
+                        </span>
+                      ))}
+                      {exp.skills.length > 3 && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted/50">
+                          +{exp.skills.length - 3}
+                        </span>
+                      )}
+                    </div>
+                    
+                    <div 
+                      className={`mt-3 flex items-center justify-end text-xs font-medium
+                                ${activeExperience?.id === exp.id 
+                                  ? "text-primary" 
+                                  : "text-muted-foreground"
+                                }`}
+                    >
+                      <span>Details</span>
+                      <ChevronRight className={`w-4 h-4 transition-transform ${activeExperience?.id === exp.id ? "rotate-90" : ""}`} />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
+        
+        {/* Experience details */}
+        <AnimatePresence mode="wait">
+          {activeExperience && (
+            <motion.div 
+              key={activeExperience.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="rounded-lg p-6 border bg-card/50 backdrop-blur-sm"
+            >
+              <ExperienceDetail experience={activeExperience} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
