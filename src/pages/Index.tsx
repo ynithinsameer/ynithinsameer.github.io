@@ -58,7 +58,7 @@ const Index = () => {
             {/* Left: Photo and Bio */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: I, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className="flex-1 space-y-6"
             >
