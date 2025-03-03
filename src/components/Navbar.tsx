@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ModeToggle } from "./ui/mode-toggle";
@@ -49,25 +48,19 @@ const Navbar = () => {
           : "backdrop-blur-none bg-background/0"
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between h-16 px-4">
-        <Link to="/" className="text-lg font-medium text-foreground flex items-center">
-          <motion.span 
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            className="text-primary mr-1.5"
-          >
-            ML
-          </motion.span> 
-          Portfolio
+      <div className="container mx-auto flex items-center justify-between h-20 px-6">
+        <Link to="/" className="text-2xl font-semibold text-foreground flex items-center">
+          <span className="text-[#FF7F50]">Nithin</span>
+          <span className="ml-1.5">Sameer</span>
         </Link>
         
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-8">
           {navLinks.map(link => (
             <Link 
               key={link.path}
               to={link.path} 
-              className={`text-sm font-medium transition-colors relative ${
+              className={`text-base font-medium transition-colors relative ${
                 isActive(link.path) 
                   ? "text-primary" 
                   : "hover:text-primary"
@@ -77,7 +70,7 @@ const Navbar = () => {
               {isActive(link.path) && (
                 <motion.div 
                   layoutId="active-nav-indicator"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
+                  className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-primary"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
@@ -86,10 +79,10 @@ const Navbar = () => {
             </Link>
           ))}
           
-          <a href="/resume.pdf" download="resume.pdf">
-            <Button variant="outline" size="sm" className="group">
+          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" size="lg" className="group text-base">
               Resume
-              <FileDown className="ml-1 h-4 w-4 group-hover:text-primary transition-colors" />
+              <FileDown className="ml-2 h-5 w-5 group-hover:text-primary transition-colors" />
             </Button>
           </a>
           
@@ -105,8 +98,9 @@ const Navbar = () => {
             size="icon" 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            className="h-10 w-10"
           >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
         </div>
       </div>
@@ -121,12 +115,12 @@ const Navbar = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="md:hidden border-t overflow-hidden"
           >
-            <div className="container px-4 py-4 flex flex-col space-y-4">
+            <div className="container px-6 py-6 flex flex-col space-y-5">
               {navLinks.map(link => (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`py-2 text-sm font-medium ${
+                  className={`py-2 text-base font-medium ${
                     isActive(link.path) 
                       ? "text-primary" 
                       : "text-foreground hover:text-primary"
@@ -138,11 +132,12 @@ const Navbar = () => {
               
               <a 
                 href="/resume.pdf" 
-                download="resume.pdf"
-                className="py-2 text-sm font-medium flex items-center"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2 text-base font-medium flex items-center hover:text-primary"
               >
                 Resume
-                <FileDown className="ml-2 h-4 w-4" />
+                <FileDown className="ml-2 h-5 w-5" />
               </a>
             </div>
           </motion.div>

@@ -1,124 +1,182 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ResearchCard, { Research } from "@/components/ResearchCard";
-import TimelineItem, { Milestone } from "@/components/TimelineItem";
 import ProjectCard, { Project } from "@/components/ProjectCard";
+import ProjectModal from "@/components/ProjectModal";
+import ResearchCard from "@/components/ResearchCard";
+import TimelineItem from "@/components/TimelineItem";
 
 const projects: Project[] = [
   {
     id: 1,
-    title: "Neural Network Framework",
-    description: "A lightweight neural network framework built from scratch for educational purposes.",
-    image: "/placeholder.svg",
-    demoUrl: "https://example.com/neural-network-demo",
-    repoUrl: "https://github.com/example/neural-network",
-    technologies: ["Python", "NumPy", "matplotlib"]
+    title: "AI-Powered Multilingual Chatbot",
+    shortDescription: "A sophisticated ML-based chatbot using Next.js and RAG, supporting multiple languages.",
+    description: "Headstarter Fellowship Project (Jul 2024 - Aug 2024)",
+    detailedDescription: "• Engineered a sophisticated ML-based chatbot using Next.js and executed Retrieval Augmented Generation (RAG), increasing query response accuracy by 22% across multiple languages.\n• Implemented RAG architecture using Langchain and Pinecone, significantly expanding the chatbot's knowledge base and improving its ability to provide contextually relevant responses.\n• Composed a custom LLM routing mechanism using Groq's Mixtral-8x7B and OpenAI's GPT-4, optimizing response times and expanding the knowledge base for contextually relevant responses.",
+    image: "/assets/images/chatbot.png",
+    technologies: ["Next.js", "RAG", "Langchain", "Pinecone", "Groq", "OpenAI"],
+    keyFeatures: [
+      "22% increase in query accuracy",
+      "Custom LLM routing mechanism",
+      "Multilingual support",
+      "Contextual responses"
+    ],
+    featured: true
   },
   {
     id: 2,
-    title: "Sentiment Analysis API",
-    description: "An API for real-time sentiment analysis of social media posts and customer feedback.",
-    image: "/placeholder.svg",
-    demoUrl: "https://example.com/sentiment-demo",
-    repoUrl: "https://github.com/example/sentiment-api",
-    technologies: ["Python", "FastAPI", "BERT", "Docker"]
+    title: "Recidivism Prediction Model",
+    shortDescription: "ML model to predict criminal recidivism with ethical considerations.",
+    description: "College Project (Jan 2023 - May 2023)",
+    detailedDescription: "• Developed a predictive model achieving 76.5% accuracy in identifying recidivism risk factors using R, employing Stepwise Selection and Chi-Square analysis.\n• Identified key insights into the correlation between work history and recidivism using a Decision tree, shedding light on racial disparities in post-release supervision.\n• Implemented Decision Tree analysis using R, identifying critical employment thresholds that differentiate recidivism probabilities, with employment status influencing recidivism predictions at a key threshold of 64.3% days employed.",
+    image: "/assets/images/recidivism-model.png",
+    technologies: ["R", "Chi-Square Analysis", "Stepwise Selection", "Decision Trees", "Statistical Analysis"],
+    keyFeatures: [
+      "76.5% prediction accuracy",
+      "Bias mitigation techniques",
+      "Employment threshold analysis",
+      "Ethical AI implementation"
+    ],
+    featured: true
   },
   {
     id: 3,
-    title: "Medical Image Classifier",
-    description: "A deep learning model to classify medical images and assist in diagnosis.",
-    image: "/placeholder.svg",
-    demoUrl: "https://example.com/medical-classifier",
-    repoUrl: "https://github.com/example/medical-image-classifier",
-    technologies: ["Python", "TensorFlow", "OpenCV", "Flask"]
+    title: "RecipeMate",
+    shortDescription: "A robust recipe recommendation system using NLP techniques.",
+    description: "Personal Project (Jan 2024 - May 2024)",
+    detailedDescription: "• Engineered a robust recipe recommendation system using TF-IDF vectorization and OpenAI's GPT-3.5-turbo model, delivering personalized and culturally adapted recipe suggestions through an intuitive Streamlit frontend.\n• Designed and implemented a robust AI system architecture for RecipeMate, incorporating A/B testing methodologies to measure and optimize recommendation accuracy, resulting in a 15% increase in user engagement and recipe discovery.",
+    image: "/assets/images/recipemate.png",
+    technologies: ["Streamlit", "Python", "NLP", "OpenAI", "TF-IDF"],
+    keyFeatures: [
+      "Personalized recommendations",
+      "Cultural recipe adaptation",
+      "A/B testing optimization",
+      "15% increase in engagement"
+    ]
   },
   {
     id: 4,
-    title: "Stock Price Predictor",
-    description: "Time series forecasting model for stock price prediction using LSTM networks.",
-    image: "/placeholder.svg",
-    demoUrl: "https://example.com/stock-predictor",
-    repoUrl: "https://github.com/example/stock-predictor",
-    technologies: ["Python", "Keras", "Pandas", "Plotly"]
+    title: "Celestial Object Classification",
+    shortDescription: "ML-powered classification of celestial objects from SDSS data.",
+    description: "Research Project (Aug 2023 - Dec 2023)",
+    detailedDescription: "• Achieved 93.15% accuracy in classifying Sloan Survey celestial objects by optimizing ML models using PyTorch in Databricks, validating redshift's significance via EDA and Deep Learning.",
+    image: "/assets/images/celestial.png",
+    technologies: ["Databricks", "Python", "Keras", "PyTorch", "Deep Learning"],
+    keyFeatures: [
+      "93.15% classification accuracy",
+      "Deep Learning models",
+      "EDA and validation",
+      "Redshift analysis"
+    ]
   },
   {
     id: 5,
-    title: "Data Visualization Dashboard",
-    description: "Interactive dashboard for visualizing and exploring complex datasets.",
-    image: "/placeholder.svg",
-    demoUrl: "https://example.com/data-dashboard",
-    repoUrl: "https://github.com/example/data-dashboard",
-    technologies: ["React", "D3.js", "Python", "Flask"]
+    title: "Superstore Regression Analysis",
+    shortDescription: "Profit prediction model for a superstore using tree-based models.",
+    description: "Data Analysis Project (Aug 2022 - Dec 2022)",
+    detailedDescription: "• Executed regression models using Python to predict profit at a superstore utilizing Extra Trees Regressor to predict profit; identified tree-based models as superior, surpassing other models by 15% in accuracy.\n• Analyzed consumer patterns thereby observing a correlation between consumer buying and profit. Applied label encoding to facilitate the ideal schema for dealing with datatype issues in regression analysis.",
+    image: "/assets/images/superstore.png",
+    technologies: ["Python", "Data Analysis", "Regression", "Extra Trees", "Label Encoding"],
+    keyFeatures: [
+      "15% accuracy improvement",
+      "Consumer pattern analysis",
+      "Label encoding optimization",
+      "Tree-based model superiority"
+    ]
   }
 ];
 
-const milestones: Milestone[] = [
-  {
-    id: 1,
-    title: "Best Paper Award at AI Conference",
-    date: "November 2022",
-    description: "Received the Best Paper Award for research on novel transformer architectures for improved NLP performance."
-  },
-  {
-    id: 2,
-    title: "Joined AI Solutions Inc.",
-    date: "January 2020",
-    description: "Started as a Senior ML Engineer, leading a team focused on NLP and recommendation systems."
-  },
-  {
-    id: 3,
-    title: "MSc in Computer Science",
-    date: "May 2018",
-    description: "Graduated with distinction, specializing in Machine Learning and Artificial Intelligence."
-  },
-  {
-    id: 4,
-    title: "First Research Publication",
-    date: "September 2017",
-    description: "Published first research paper on deep learning techniques for medical image analysis."
-  },
-  {
-    id: 5,
-    title: "Started Open Source Contributions",
-    date: "June 2016",
-    description: "Began contributing to major open-source ML libraries and frameworks."
-  }
-];
+// Research Papers Data
+export interface Research {
+  id: number;
+  title: string;
+  authors: string[];
+  publication: string;
+  year: string;
+  abstract: string;
+  link: string;
+}
 
 const researchPapers: Research[] = [
   {
     id: 1,
-    title: "Improved Transformer Architecture for Efficient NLP",
-    authors: ["Your Name", "Collaborator One", "Collaborator Two"],
-    publication: "International Conference on ML",
-    year: "2022",
-    abstract: "In this paper, we present a novel transformer architecture that reduces computational complexity while maintaining or improving performance on standard NLP benchmarks. Our approach introduces a sparse attention mechanism that selectively focuses on the most relevant parts of the input sequence, reducing the quadratic complexity of standard attention to near-linear.",
-    link: "https://example.com/paper1"
+    title: "College Exam Allocation Using MongoDB and Python3",
+    authors: ["Nithin Sameer Yerramilli", "et al."],
+    publication: "2021 2nd Global Conference for Advancement in Technology (GCAT)",
+    year: "2021",
+    abstract: "This paper presents an automated system for scheduling examination activities using object-oriented programming methods and MongoDB. It demonstrates the benefits of using modern database technologies for efficient exam management in educational institutions.",
+    link: "https://ieeexplore.ieee.org/document/9587589"
   },
   {
     id: 2,
-    title: "Deep Learning Approaches for Medical Image Analysis",
-    authors: ["Your Name", "Collaborator Three"],
-    publication: "Journal of Medical AI",
-    year: "2020",
-    abstract: "We explore the application of convolutional neural networks to medical image analysis, with a focus on X-ray and MRI scan classification. Our model achieves state-of-the-art accuracy on benchmark datasets while requiring significantly less training data through the use of novel data augmentation techniques.",
-    link: "https://example.com/paper2"
+    title: "Automatic Exam Answer Checker using OCR and Sentence Embedding",
+    authors: ["Nithin Sameer Yerramilli", "et al."],
+    publication: "2021 International Conference on Disruptive Technologies (CENTCON)",
+    year: "2021",
+    abstract: "This research introduces an innovative system for automating the evaluation of exam answer scripts using Optical Character Recognition (OCR) and sentence embedding techniques. It aims to reduce the time and resources spent on manual answer sheet evaluation.",
+    link: "https://ieeexplore.ieee.org/document/9688008"
+  }
+];
+
+// Milestones Data
+export interface Milestone {
+  id: number;
+  title: string;
+  date: string;
+  description: string;
+}
+
+const milestones: Milestone[] = [
+  {
+    id: 1,
+    title: "Masters in Data Analytics Engineering",
+    date: "Jan 2023 - Dec 2024",
+    description: "Pursuing advanced studies at George Mason University with a stellar GPA of 3.96/4.0, focusing on cutting-edge data analytics techniques and AI applications."
+  },
+  {
+    id: 2,
+    title: "Active Leaders Program",
+    date: "Sep 2023 - Nov 2023",
+    description: "Completed an intensive leadership program at George Mason University, developing skills in conflict management, civic engagement, and ethical leadership."
   },
   {
     id: 3,
-    title: "Ensemble Methods for Time Series Forecasting in Financial Markets",
-    authors: ["Your Name", "Collaborator Four", "Collaborator Five"],
-    publication: "Financial Data Science Conference",
-    year: "2019",
-    abstract: "This paper presents an ensemble approach combining LSTM networks, Prophet, and traditional ARIMA models for improved time series forecasting in financial markets. We demonstrate that our ensemble method outperforms individual models and better captures market volatility during unusual economic conditions.",
-    link: "https://example.com/paper3"
+    title: "Software Engineer Intern",
+    date: "May 2021 - Jul 2021",
+    description: "At DigiTran Solutions, developed an AI-based object detection, avoidance, and measurement system. Created technical documentation and gained hands-on experience in AI and computer vision technologies."
+  },
+  {
+    id: 4,
+    title: "Data Analyst Intern",
+    date: "Jan 2021 - Feb 2021",
+    description: "At The Sparks Foundation, conducted in-depth data analysis, improving prediction accuracy by 13% and enhancing data visualization techniques."
+  },
+  {
+    id: 5,
+    title: "Bachelor of Computer Science Engineering",
+    date: "Aug 2018 - Jun 2022",
+    description: "Completed undergraduate studies at Dayanada Sagar University with a strong GPA of 3.50/4.0, laying the foundation for a career in technology and data science."
+  },
+  {
+    id: 6,
+    title: "TEDxDSU Coordinator",
+    date: "Dec 2018 - Nov 2019",
+    description: "Led end-to-end event management for TEDxDSU, overseeing curation, sponsorships, and logistics. Coordinated volunteers and managed technical operations for a successful event."
   }
 ];
 
 const ProjectsPage = () => {
-  const [hoveredProject, setHoveredProject] = useState<number | null>(null);
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const handleViewDetails = (project: Project) => {
+    setActiveProject(project);
+    setIsModalOpen(true);
+  };
+  
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   
   return (
     <div className="min-h-screen pt-24 pb-16">
@@ -129,65 +187,67 @@ const ProjectsPage = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-3xl font-bold mb-3">Projects & Research</h1>
+          <h1 className="text-3xl font-bold mb-3">Portfolio</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Explore my projects, research papers, and career milestones.
+            Explore my projects, research papers, and key milestones.
           </p>
         </motion.div>
-        
+
         <Tabs defaultValue="projects" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-12">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-12">
             <TabsTrigger value="projects">Projects</TabsTrigger>
-            <TabsTrigger value="research">Research Papers</TabsTrigger>
-            <TabsTrigger value="timeline">Timeline</TabsTrigger>
+            <TabsTrigger value="papers">Research Papers</TabsTrigger>
+            <TabsTrigger value="milestones">Milestones</TabsTrigger>
           </TabsList>
           
           <TabsContent value="projects" className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  onMouseEnter={() => setHoveredProject(index)}
-                  onMouseLeave={() => setHoveredProject(null)}
-                >
-                  <ProjectCard project={project} index={index} />
-                </motion.div>
+                <ProjectCard 
+                  key={project.id} 
+                  project={project} 
+                  index={index} 
+                  onViewDetails={handleViewDetails}
+                />
               ))}
             </div>
           </TabsContent>
           
-          <TabsContent value="research" className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {researchPapers.map((paper, index) => (
-                <motion.div
-                  key={paper.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <ResearchCard research={paper} />
-                </motion.div>
+          <TabsContent value="papers" className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {researchPapers.map((paper) => (
+                <ResearchCard key={paper.id} research={paper} />
               ))}
             </div>
           </TabsContent>
           
-          <TabsContent value="timeline" className="space-y-8">
-            <div className="relative">
-              {/* Vertical line */}
-              <div className="absolute left-1/2 top-0 -translate-x-1/2 w-0.5 h-full bg-muted" />
-              
-              {/* Timeline items */}
-              <div className="space-y-0">
-                {milestones.map((milestone, index) => (
-                  <TimelineItem key={milestone.id} milestone={milestone} index={index} />
-                ))}
-              </div>
+          <TabsContent value="milestones" className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {milestones.map((milestone) => (
+                <div key={milestone.id} className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                  <div className="text-4xl mb-6">
+                    {milestone.id === 1 ? "🎓" : 
+                     milestone.id === 2 ? "🏆" : 
+                     milestone.id === 3 ? "🤖" : 
+                     milestone.id === 4 ? "📊" : 
+                     milestone.id === 5 ? "🎓" : 
+                     milestone.id === 6 ? "🎤" : ""}
+                  </div>
+                  <h3 className="font-semibold text-gray-800 dark:text-gray-200 text-xl mb-3">{milestone.date}</h3>
+                  <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-4">{milestone.title}</h4>
+                  <p className="text-gray-600 dark:text-gray-400">{milestone.description}</p>
+                </div>
+              ))}
             </div>
           </TabsContent>
         </Tabs>
+        
+        {/* Project Modal */}
+        <ProjectModal 
+          project={activeProject} 
+          isOpen={isModalOpen} 
+          onClose={handleCloseModal} 
+        />
       </div>
     </div>
   );

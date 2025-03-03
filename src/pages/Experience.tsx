@@ -1,209 +1,208 @@
-
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Experience } from "@/components/ExperienceCard";
-import ExperienceDetail from "@/components/ExperienceDetail";
 import { ChevronRight, Briefcase } from "lucide-react";
+
+export interface Experience {
+  id: number;
+  company: string;
+  position: string;
+  period: string;
+  description: string;
+  detailedDescription: string;
+  skills: string[];
+  logo?: string;
+}
 
 const experiences: Experience[] = [
   {
     id: 1,
-    company: "AI Solutions Inc.",
-    position: "Senior ML Engineer",
-    period: "2020 - Present",
-    description: "Lead machine learning engineer working on NLP and recommendation systems.",
-    detailedDescription: "As a Senior ML Engineer at AI Solutions, I lead a team of 4 developers working on state-of-the-art NLP models and recommendation systems. My responsibilities include designing and implementing ML pipelines, optimizing model performance, and collaborating with cross-functional teams to deploy solutions to production. I've successfully improved the accuracy of our text classification model by 15% and reduced inference time by 30% through model optimization and quantization techniques. In addition, I mentor junior engineers and contribute to company-wide ML best practices.",
-    skills: ["Python", "TensorFlow", "PyTorch", "NLP", "Kubernetes", "Docker", "AWS", "MLOps"],
-    logo: "/placeholder.svg"
+    company: "GMU",
+    position: "Data Analyst Intern",
+    period: "August 2024 - Present",
+    description: "Graduate Studies - Data Analysis and Machine Learning",
+    detailedDescription: `• Implementing machine learning models to analyze student admission data, improving prediction accuracy by 23%.\n
+• Creating interactive dashboards using Tableau (Salesforce) to visualize key metrics, increasing data accessibility and enabling data-driven student engagement strategies.\n
+• Executed 5 interactive Salesforce dashboards, improving stakeholder data accessibility and enabling more informed decision-making through visualized key metrics and trends.`,
+    skills: ["Python", "Machine Learning", "Tableau", "Salesforce", "Data Analysis"],
   },
   {
     id: 2,
-    company: "DataTech Labs",
+    company: "Erasmus.AI",
     position: "Data Scientist",
-    period: "2018 - 2020",
-    description: "Built predictive models and data pipelines for financial services.",
-    detailedDescription: "At DataTech Labs, I developed and deployed machine learning models for financial risk assessment and fraud detection. I designed and implemented end-to-end data pipelines to process and analyze large volumes of transaction data. My work directly contributed to a 25% reduction in fraud losses for our largest client. I also collaborated with the product team to create intuitive visualizations and dashboards to communicate model insights to non-technical stakeholders.",
-    skills: ["Python", "scikit-learn", "SQL", "Apache Spark", "Data Visualization", "Time Series Analysis"],
-    logo: "/placeholder.svg"
+    period: "August 2024 - December 2024",
+    description: "Capstone Project - ClimateGPT Development",
+    detailedDescription: `• Built ClimateGPT's core function calling architecture using Python, enabling the AI model to execute 60+ specialized climate analysis functions through a unified tool interface.\n
+• Developed an intelligent query router and flexible tool calling system that allows ClimateGPT to analyze climate data from NOAA, NASA and World Bank databases through natural language queries.\n
+• Led technical design decisions as Product Owner in an Agile team of 4, implementing modular data processing pipelines that power ClimateGPT's automated climate impact analysis capabilities.`,
+    skills: ["Python", "Natural Language Processing", "API Development", "Climate Data Analysis", "Agile", "Product Management"],
   },
   {
     id: 3,
-    company: "Health Analytics Corp",
-    position: "ML Research Intern",
-    period: "2017 - 2018",
-    description: "Researched and implemented computer vision algorithms for medical imaging.",
-    detailedDescription: "During my internship at Health Analytics Corp, I focused on applying computer vision techniques to medical imaging data. I implemented a convolutional neural network that achieved 92% accuracy in identifying abnormalities in X-ray images. I also contributed to a research paper published in a top medical AI conference. Working closely with medical professionals, I gained valuable domain knowledge and learned how to translate clinical requirements into technical solutions.",
-    skills: ["Python", "Computer Vision", "TensorFlow", "OpenCV", "Medical Imaging", "Research"],
-    logo: "/placeholder.svg"
+    company: "GMU",
+    position: "Machine Learning Research Associate",
+    period: "August 2023 - August 2024",
+    description: "Research on Consumer Behavior Analysis using ML",
+    detailedDescription: `• Led advanced statistical analyses on India's largest household survey dataset (174,000+ households across 27 states) using R and Python, uncovering a 12% decrease in spending patterns post-app bans through CEM, difference-in-difference analysis, and regression with survey weighting.\n
+• Designed and implemented machine learning models achieving 85% accuracy in forecasting consumer behavior trends. Optimized big data preprocessing workflows using PySpark, enhancing efficiency for downstream ML tasks.\n
+• Validated results from Research papers and Journals. Communicated findings to stakeholders detailing KPI's.`,
+    skills: ["Python", "R", "PySpark", "Statistical Analysis", "Machine Learning", "Big Data", "Research"],
   },
   {
     id: 4,
-    company: "Quantum Computing Project",
-    position: "Research Assistant",
-    period: "2016 - 2017",
-    description: "Assisted in quantum computing research and algorithm development.",
-    detailedDescription: "As a Research Assistant at the Quantum Computing Project, I assisted senior researchers in developing and testing quantum computing algorithms. I implemented quantum algorithms using Qiskit and helped design experiments to evaluate their performance. I also contributed to the development of a quantum simulator that allowed for faster testing of quantum algorithms on classical hardware. This role strengthened my understanding of quantum computing principles and provided me with hands-on experience in this emerging field.",
-    skills: ["Quantum Computing", "Qiskit", "Python", "Linear Algebra", "Algorithm Design", "Research"],
-    logo: "/placeholder.svg"
+    company: "DigiTran Solutions",
+    position: "Software Engineer Intern",
+    period: "May 2021 - Jul 2021",
+    description: "AI and Computer Vision Development",
+    detailedDescription: `• Developed an AI-based object detection, avoidance, and measurement system.\n
+• Created comprehensive technical documentation for system architecture and implementation.\n
+• Gained hands-on experience in AI and computer vision technologies.`,
+    skills: ["Python", "Computer Vision", "AI", "Technical Documentation"],
+  },
+  {
+    id: 5,
+    company: "The Sparks Foundation",
+    position: "Data Analyst Intern",
+    period: "Jan 2021 - Feb 2021",
+    description: "Data Analysis and Visualization",
+    detailedDescription: `• Conducted in-depth data analysis on various datasets.\n
+• Improved prediction accuracy by 13% through advanced analytical techniques.\n
+• Enhanced data visualization methods for better insight communication.`,
+    skills: ["Data Analysis", "Python", "Data Visualization", "Predictive Modeling"],
   }
 ];
 
 const ExperiencePage = () => {
-  const [activeExperience, setActiveExperience] = useState<Experience | null>(null);
-  const timelineRef = useRef<HTMLDivElement>(null);
-  
-  // Handle smooth scroll when clicking a timeline item
-  useEffect(() => {
-    if (activeExperience && timelineRef.current) {
-      const element = document.getElementById(`exp-${activeExperience.id}`);
-      if (element) {
-        const container = timelineRef.current;
-        const elementRect = element.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        
-        // Calculate the scroll position to center the element
-        const scrollLeft = element.offsetLeft - (container.clientWidth / 2) + (element.clientWidth / 2);
-        
-        container.scrollTo({
-          left: scrollLeft,
-          behavior: 'smooth'
-        });
-      }
-    }
-  }, [activeExperience]);
-  
+  const [activeExperience, setActiveExperience] = useState<Experience | null>(experiences[0]);
+
   return (
-    <div className="min-h-screen pt-24 pb-16">
-      <div className="container px-4 md:px-6">
+    <div className="min-h-screen pt-24 pb-16 flex flex-col">
+      <div className="container px-4 md:px-6 flex-1 flex flex-col">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-8"
         >
-          <h1 className="text-3xl font-bold mb-4">Work Experience</h1>
+          <h1 className="text-4xl font-bold mb-4">Work Experience</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             My professional journey in machine learning and data science.
             Select an experience to view details.
           </p>
         </motion.div>
-        
-        {/* Timeline View */}
-        <div className="mb-16">
-          <div 
-            ref={timelineRef}
-            className="relative flex overflow-x-auto pb-12 hide-scrollbar"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-            {/* Main timeline line */}
-            <div className="absolute h-0.5 bg-muted top-[70px] left-0 right-0 z-0"></div>
+
+        <div className="grid grid-cols-1 md:grid-cols-[1fr,1.5fr] gap-8 flex-1 min-h-[600px]">
+          {/* Timeline - Scrollable */}
+          <div className="relative overflow-hidden flex flex-col">
+            <div className="absolute left-8 top-0 bottom-0 w-px bg-muted"></div>
             
-            {/* Timeline items */}
-            <div className="flex space-x-12 px-8 min-w-max">
-              {experiences.map((exp, index) => (
+            <div className="space-y-6 overflow-y-auto pr-4 custom-scrollbar" style={{ maxHeight: 'calc(100vh - 250px)' }}>
+              {experiences.map((exp) => (
                 <motion.div
-                  id={`exp-${exp.id}`}
                   key={exp.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className={`relative mt-4 w-[220px] cursor-pointer smoother-transition ${
-                    activeExperience?.id === exp.id 
-                      ? "scale-105" 
-                      : "hover:scale-102"
-                  }`}
-                  onClick={() => setActiveExperience(activeExperience?.id === exp.id ? null : exp)}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="relative"
+                  onClick={() => setActiveExperience(exp)}
                 >
-                  {/* Year marker */}
-                  <div className="text-sm font-medium mb-3">{exp.period}</div>
+                  {/* Timeline dot */}
+                  <div className="absolute left-8 -translate-x-1/2 w-4 h-4 rounded-full border-2 bg-background transition-colors duration-300"
+                       style={{
+                         borderColor: activeExperience?.id === exp.id ? '#FF7F50' : 'var(--muted)',
+                         backgroundColor: activeExperience?.id === exp.id ? '#FF7F50' : 'var(--background)'
+                       }}
+                  />
                   
-                  {/* Timeline dot with pulse effect */}
-                  <div className="absolute -top-[13px] left-0 z-10">
-                    <motion.div 
-                      className={`w-6 h-6 rounded-full flex items-center justify-center
-                                ${activeExperience?.id === exp.id 
-                                  ? "bg-primary" 
-                                  : "bg-muted/80 hover:bg-primary/50"
-                                } smoother-transition`}
-                      whileHover={{ scale: 1.2 }}
-                    >
-                      <Briefcase className="w-3 h-3 text-background" />
-                    </motion.div>
-                    
-                    {/* Vertical line connecting to card */}
-                    <div className="w-0.5 h-8 bg-muted/60 ml-[11px]"></div>
-                  </div>
-                  
-                  {/* Experience card */}
+                  {/* Content card */}
                   <div 
-                    className={`p-4 rounded-lg border smoother-transition
-                              ${activeExperience?.id === exp.id 
-                                ? "border-primary shadow-md bg-primary/5" 
-                                : "border-muted hover:border-primary/30"
-                              }`}
+                    className={`ml-16 p-4 rounded-lg cursor-pointer transition-all duration-300 ${
+                      activeExperience?.id === exp.id 
+                        ? 'bg-[#FF7F50]/5 border-[#FF7F50]' 
+                        : 'hover:bg-muted/5 border-transparent'
+                    } border`}
                   >
-                    <div className="flex items-start gap-3">
-                      <div className="bg-muted/30 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 mt-1">
-                        {exp.logo ? (
-                          <img src={exp.logo} alt={exp.company} className="w-6 h-6 object-contain" />
-                        ) : (
-                          <div className="w-6 h-6 bg-primary/20 rounded-full" />
-                        )}
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-base">{exp.position}</h3>
-                        <p className="text-sm text-muted-foreground">{exp.company}</p>
-                      </div>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-medium">{exp.position}</h3>
+                      <ChevronRight 
+                        className={`w-5 h-5 transition-transform duration-300 ${
+                          activeExperience?.id === exp.id ? 'rotate-90 text-[#FF7F50]' : ''
+                        }`}
+                      />
                     </div>
-                    
-                    <div className="mt-3 text-xs text-muted-foreground">{exp.description}</div>
-                    
-                    <div className="mt-3 flex flex-wrap gap-1">
-                      {exp.skills.slice(0, 3).map(skill => (
-                        <span key={skill} className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted/50">
-                          {skill}
-                        </span>
-                      ))}
-                      {exp.skills.length > 3 && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted/50">
-                          +{exp.skills.length - 3}
-                        </span>
-                      )}
-                    </div>
-                    
-                    <div 
-                      className={`mt-3 flex items-center justify-end text-xs font-medium
-                                ${activeExperience?.id === exp.id 
-                                  ? "text-primary" 
-                                  : "text-muted-foreground"
-                                }`}
-                    >
-                      <span>Details</span>
-                      <ChevronRight className={`w-4 h-4 transition-transform ${activeExperience?.id === exp.id ? "rotate-90" : ""}`} />
-                    </div>
+                    <p className="text-sm text-muted-foreground mb-1">{exp.company}</p>
+                    <p className="text-xs text-muted-foreground">{exp.period}</p>
+                    <p className="text-sm text-muted-foreground mt-2">{exp.description}</p>
                   </div>
                 </motion.div>
               ))}
             </div>
           </div>
+
+          {/* Experience Details - Fixed */}
+          <div className="relative h-[calc(100vh-250px)]">
+            <div className="sticky top-24">
+              <AnimatePresence mode="wait">
+                {activeExperience && (
+                  <motion.div
+                    key={activeExperience.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="p-6 rounded-lg border bg-card/50 backdrop-blur-sm overflow-y-auto custom-scrollbar"
+                    style={{ maxHeight: 'calc(100vh - 250px)' }}
+                  >
+                    <div className="mb-6">
+                      <h2 className="text-2xl font-semibold mb-2">{activeExperience.position}</h2>
+                      <p className="text-muted-foreground">
+                        {activeExperience.company} · {activeExperience.period}
+                      </p>
+                    </div>
+
+                    <div className="prose prose-sm dark:prose-invert max-w-none mb-6">
+                      {activeExperience.detailedDescription.split('\n').map((paragraph, idx) => (
+                        <p key={idx} className="mb-2">{paragraph}</p>
+                      ))}
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-medium mb-3">Skills & Technologies</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {activeExperience.skills.map((skill, index) => (
+                          <motion.span
+                            key={skill}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3, delay: index * 0.05 }}
+                            className="px-3 py-1 rounded-full text-xs bg-[#FF7F50]/10 text-[#FF7F50]"
+                          >
+                            {skill}
+                          </motion.span>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
         </div>
-        
-        {/* Experience details */}
-        <AnimatePresence mode="wait">
-          {activeExperience && (
-            <motion.div 
-              key={activeExperience.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="rounded-lg p-6 border bg-card/50 backdrop-blur-sm"
-            >
-              <ExperienceDetail experience={activeExperience} />
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
+
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: rgba(255, 127, 80, 0.2);
+          border-radius: 20px;
+          border: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background-color: rgba(255, 127, 80, 0.4);
+        }
+      `}</style>
     </div>
   );
 };
