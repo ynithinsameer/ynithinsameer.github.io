@@ -15,6 +15,10 @@ touch .nojekyll
 # if you are deploying to a custom domain
 # echo 'www.example.com' > CNAME
 
+# Remove existing git repository if it exists
+rm -rf .git
+
+# Initialize a new git repository
 git init
 git checkout -b main
 git add -A
