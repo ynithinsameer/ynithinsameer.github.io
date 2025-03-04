@@ -1,7 +1,5 @@
 import { motion } from "framer-motion";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface Blog {
   id: number;
@@ -35,8 +33,8 @@ const BlogsPage = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">My Blog</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <h1 className="text-3xl font-bold mb-3">My Blog</h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             Articles on productivity, AI, and technology.
           </p>
         </motion.div>
@@ -48,10 +46,10 @@ const BlogsPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="mb-8"
+              className="mb-8 group"
             >
-              <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden border-none bg-gradient-to-r from-[#FEC6A1]/5 to-transparent">
-                <CardContent className="p-8">
+              <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div className="p-8">
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 mr-2" />
@@ -82,23 +80,17 @@ const BlogsPage = () => {
                     ))}
                   </div>
 
-                  <Button 
-                    asChild 
-                    variant="ghost" 
-                    className="group/button hover:bg-[#FEC6A1]/10 hover:text-[#FEC6A1]"
+                  <a 
+                    href={blog.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center text-[#FEC6A1] hover:underline group/button"
                   >
-                    <a 
-                      href={blog.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center"
-                    >
-                      Read Article 
-                      <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover/button:translate-x-1" />
-                    </a>
-                  </Button>
-                </CardContent>
-              </Card>
+                    Read Article 
+                    <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover/button:translate-x-1" />
+                  </a>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>

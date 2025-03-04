@@ -3,12 +3,18 @@ import { Link, useLocation } from "react-router-dom";
 import { ModeToggle } from "./ui/mode-toggle";
 import { Button } from "./ui/button";
 import { FileDown, Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  
+  // Scroll progress for animations
+  const { scrollY } = useScroll();
+  const navbarOpacity = useTransform(scrollY, [0, 50], [0, 1]);
+  const navbarBlur = useTransform(scrollY, [0, 50], [0, 8]);
+  const navbarHeight = useTransform(scrollY, [0, 100], ["5rem", "4rem"]);
 
   // Handle scroll detection for navbar styling
   useEffect(() => {
@@ -41,52 +47,104 @@ const Navbar = () => {
   ];
 
   return (
-    <nav 
-      className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${
+    <motion.nav 
+      style={{ 
+        backdropFilter: mobileMenuOpen ? "blur(8px)" : `blur(${navbarBlur.get()}px)`,
+        height: navbarHeight
+      }}
+      className={`fixed top-0 left-0 w-full z-40 transition-colors duration-300 ${
         isScrolled || mobileMenuOpen 
-          ? "backdrop-blur-lg bg-background/90 border-b" 
-          : "backdrop-blur-none bg-background/0"
+          ? "border-b" 
+          : ""
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between h-20 px-6">
+      <motion.div 
+        style={{ 
+          backgroundColor: mobileMenuOpen 
+            ? "var(--background-90)" 
+            : `rgba(var(--background-rgb), ${navbarOpacity.get()})` 
+        }}
+        className="absolute inset-0 -z-10"
+      />
+      
+      <div className="container mx-auto flex items-center justify-between h-full px-6">
         <Link to="/" className="text-2xl font-semibold text-foreground flex items-center">
-          <span className="text-[#FF7F50]">Nithin</span>
-          <span className="ml-1.5">Sameer</span>
+          <motion.span 
+            className="text-[#FEC6A1]"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            Nithin
+          </motion.span>
+          <motion.span 
+            className="ml-1.5"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            Sameer
+          </motion.span>
         </Link>
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
-          {navLinks.map(link => (
-            <Link 
+          {navLinks.map((link, index) => (
+            <motion.div
               key={link.path}
-              to={link.path} 
-              className={`text-base font-medium transition-colors relative ${
-                isActive(link.path) 
-                  ? "text-primary" 
-                  : "hover:text-primary"
-              }`}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * index, duration: 0.5 }}
             >
-              {link.label}
-              {isActive(link.path) && (
-                <motion.div 
-                  layoutId="active-nav-indicator"
-                  className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-primary"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              )}
-            </Link>
+              <Link 
+                to={link.path} 
+                className={`text-base font-medium transition-colors relative ${
+                  isActive(link.path) 
+                    ? "text-[#FEC6A1]" 
+                    : "hover:text-[#FEC6A1]"
+                }`}
+              >
+                {link.label}
+                {isActive(link.path) && (
+                  <motion.div 
+                    layoutId="active-nav-indicator"
+                    className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-[#FEC6A1]"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
+              </Link>
+            </motion.div>
           ))}
           
-          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
-            <Button variant="outline" size="lg" className="group text-base">
-              Resume
-              <FileDown className="ml-2 h-5 w-5 group-hover:text-primary transition-colors" />
-            </Button>
-          </a>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
+            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="group text-base border-[#FEC6A1]/20 hover:border-[#FEC6A1]/50 hover:bg-[#FEC6A1]/5"
+              >
+                Resume
+                <motion.div
+                  whileHover={{ y: [0, -2, 0], x: [0, 2, 0] }}
+                  transition={{ repeat: Infinity, duration: 1 }}
+                >
+                  <FileDown className="ml-2 h-5 w-5 group-hover:text-[#FEC6A1] transition-colors" />
+                </motion.div>
+              </Button>
+            </a>
+          </motion.div>
           
-          <ModeToggle />
+          <motion.div
+            initial={{ opacity: 0, rotate: -90 }}
+            animate={{ opacity: 1, rotate: 0 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+          >
+            <ModeToggle />
+          </motion.div>
         </div>
         
         {/* Mobile Menu Toggle */}
@@ -98,9 +156,19 @@ const Navbar = () => {
             size="icon" 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-            className="h-10 w-10"
+            className="h-10 w-10 hover:bg-[#FEC6A1]/10 hover:text-[#FEC6A1]"
           >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={mobileMenuOpen ? "close" : "open"}
+                initial={{ opacity: 0, rotate: -90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: 90 }}
+                transition={{ duration: 0.2 }}
+              >
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </motion.div>
+            </AnimatePresence>
           </Button>
         </div>
       </div>
@@ -116,34 +184,59 @@ const Navbar = () => {
             className="md:hidden border-t overflow-hidden"
           >
             <div className="container px-6 py-6 flex flex-col space-y-5">
-              {navLinks.map(link => (
-                <Link
+              {navLinks.map((link, index) => (
+                <motion.div
                   key={link.path}
-                  to={link.path}
-                  className={`py-2 text-base font-medium ${
-                    isActive(link.path) 
-                      ? "text-primary" 
-                      : "text-foreground hover:text-primary"
-                  }`}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 * index, duration: 0.3 }}
                 >
-                  {link.label}
-                </Link>
+                  <Link
+                    to={link.path}
+                    className={`py-2 text-base font-medium ${
+                      isActive(link.path) 
+                        ? "text-[#FEC6A1]" 
+                        : "text-foreground hover:text-[#FEC6A1]"
+                    }`}
+                  >
+                    {link.label}
+                    {isActive(link.path) && (
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: "2rem" }}
+                        transition={{ duration: 0.3 }}
+                        className="h-0.5 bg-[#FEC6A1] mt-1"
+                      />
+                    )}
+                  </Link>
+                </motion.div>
               ))}
               
-              <a 
-                href="/resume.pdf" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="py-2 text-base font-medium flex items-center hover:text-primary"
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5, duration: 0.3 }}
               >
-                Resume
-                <FileDown className="ml-2 h-5 w-5" />
-              </a>
+                <a 
+                  href="/resume.pdf" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2 text-base font-medium flex items-center hover:text-[#FEC6A1]"
+                >
+                  Resume
+                  <motion.div
+                    animate={{ y: [0, -2, 0], x: [0, 2, 0] }}
+                    transition={{ repeat: Infinity, duration: 1 }}
+                  >
+                    <FileDown className="ml-2 h-5 w-5" />
+                  </motion.div>
+                </a>
+              </motion.div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 };
 

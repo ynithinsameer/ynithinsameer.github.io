@@ -3,6 +3,7 @@ import HexagonPortfolio, { PortfolioItem } from "@/components/HexagonPortfolio";
 import { motion } from "framer-motion";
 import { ArrowDown, Github, Linkedin, Mail, Book, MessageSquare, Brain, Notebook } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AnimatedElement, AnimatedList } from "@/components/ui/animated-element";
 
 const portfolioItems: PortfolioItem[] = [
   {
@@ -36,8 +37,8 @@ const portfolioItems: PortfolioItem[] = [
 ];
 
 const skills = [
-  "Python", "TensorFlow", "PyTorch", "scikit-learn", "R", 
-  "SQL", "Tableau", "Deep Learning", "NLP", "Computer Vision"
+  "Python", "TensorFlow", "PyTorch", "NLP", "Computer Vision", 
+  "SQL", "Tableau", "Data Analysis", "Machine Learning", "AWS"
 ];
 
 const Index = () => {
@@ -48,15 +49,14 @@ const Index = () => {
         <div className="container max-w-7xl px-4 md:px-6">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-16">
             {/* Left: Photo and Bio */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+            <AnimatedElement 
+              animation="scale"
+              duration={0.7}
               className="flex-1 flex flex-col items-center md:items-center"
             >
               <div className="relative h-[400px] w-[400px] overflow-hidden rounded-full border-4 border-[#FF7F50] shadow-xl mb-6">
                 <img 
-                  src="/assets/images/profile.jpg" 
+                  src="/assets/images/profile2.jpeg" 
                   alt="Nithin Sameer" 
                   className="object-cover w-full h-full"
                 />
@@ -83,13 +83,13 @@ const Index = () => {
                   </a>
                 </Button>
               </div>
-            </motion.div>
+            </AnimatedElement>
             
             {/* Right: Text Content */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2, type: "spring", stiffness: 100 }}
+            <AnimatedElement 
+              animation="slideLeft"
+              delay={0.2}
+              duration={0.7}
               className="flex-1 text-center md:text-left"
             >
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-8 text-center md:text-left">
@@ -99,39 +99,71 @@ const Index = () => {
               </h1>
 
               <p className="text-2xl text-muted-foreground mb-8">
-                Hello, I'm a passionate ML Engineer with expertise in building intelligent systems and extracting insights from data.
+                I build intelligent systems that transform complex data into meaningful insights.
               </p>
               <p className="text-lg text-muted-foreground mb-10">
-                I have a passion for software and AI. I enjoy creating tools that make life easier for people. With a background in computer science and statistics, I specialize in developing machine learning models and data analytics solutions that solve real-world problems.
+                My work sits at the intersection of machine learning and practical problem-solving. I'm passionate about developing AI solutions that actually work in the real world. With a background in computer science and statistics, I focus on creating tools that make data more accessible and useful, whether that's through predictive models, data visualization, or automated systems.
               </p>
               
-              <div className="flex flex-wrap gap-3 justify-center md:justify-start mb-10">
-                {skills.map((skill, index) => (
+              <AnimatedList 
+                animation="scale" 
+                staggerDelay={0.05}
+                className="flex flex-wrap gap-3 justify-center md:justify-start mb-10"
+              >
+                {skills.map((skill) => (
                   <motion.span 
-                    key={skill} 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.4 + (index * 0.05) }}
-                    className="text-sm px-4 py-2 rounded-full bg-[#FF7F50]/10 text-[#FF7F50]"
+                    key={skill}
+                    whileHover={{ 
+                      scale: 1.1, 
+                      backgroundColor: "rgba(255, 127, 80, 0.2)",
+                      transition: { duration: 0.2 }
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    className="text-sm px-4 py-2 rounded-full bg-[#FF7F50]/10 text-[#FF7F50] cursor-pointer"
                   >
                     {skill}
                   </motion.span>
                 ))}
-              </div>
+              </AnimatedList>
               
-              <div className="flex gap-6 justify-center md:justify-start">
-                <Button asChild size="lg" className="bg-[#FF7F50] hover:bg-[#FF7F50]/90 shadow-lg">
-                  <Link to="/experience">
-                    View My Work
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild size="lg" className="shadow-lg">
-                  <Link to="/projects">
+              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                <Link to="/projects">
+                  <Button 
+                    size="lg" 
+                    className="bg-[#FEC6A1] hover:bg-[#FEC6A1]/90 text-white w-full sm:w-auto group"
+                  >
+                    View My Projects
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-5 w-5 ml-2 transition-transform group-hover:translate-x-1" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Button>
+                </Link>
+                <Link to="/projects">
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="w-full sm:w-auto border-[#FEC6A1]/20 hover:border-[#FEC6A1]/50 hover:bg-[#FEC6A1]/5 group"
+                  >
                     Projects
-                  </Link>
-                </Button>
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-5 w-5 ml-2 transition-transform group-hover:translate-x-1 group-hover:text-[#FEC6A1]" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Button>
+                </Link>
               </div>
-            </motion.div>
+            </AnimatedElement>
           </div>
         </div>
 
@@ -175,18 +207,16 @@ const Index = () => {
       {/* Portfolio Section */}
       <section className="py-24 bg-muted/10">
         <div className="container max-w-6xl px-4 md:px-6">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
+          <AnimatedElement 
+            animation="slideUp"
+            viewport={{ once: true, margin: "-100px" }}
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">Featured Work</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Explore some of my recent projects in machine learning, data science, and AI development.
             </p>
-          </motion.div>
+          </AnimatedElement>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {portfolioItems.map((item, index) => (
@@ -195,24 +225,39 @@ const Index = () => {
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ 
+                  duration: 0.6, 
+                  delay: index * 0.15,
+                  type: "spring",
+                  stiffness: 50
+                }}
                 className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-background to-muted hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 <div className="p-8">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 rounded-full bg-[#FF7F50]/10 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                    <motion.div 
+                      className="w-14 h-14 rounded-full bg-[#FF7F50]/10 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300"
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.6 }}
+                    >
                       {item.title === "Pantry Manager" && <Book className="w-7 h-7 text-[#FF7F50]" />}
                       {item.title === "Support Chatbot" && <MessageSquare className="w-7 h-7 text-[#FF7F50]" />}
                       {item.title === "Flashcards App" && <Brain className="w-7 h-7 text-[#FF7F50]" />}
                       {item.title === "Smart Notes" && <Notebook className="w-7 h-7 text-[#FF7F50]" />}
-                    </div>
+                    </motion.div>
                     <h3 className="text-2xl font-semibold group-hover:text-[#FF7F50] transition-colors duration-300">{item.title}</h3>
                   </div>
                   
                   <div className="flex items-center justify-end text-sm text-muted-foreground">
-                    <span className="group-hover:translate-x-1 transition-transform duration-300">Visit Site →</span>
+                    <motion.span 
+                      className="group-hover:translate-x-1 transition-transform duration-300"
+                      whileHover={{ x: 5 }}
+                    >
+                      Visit Site →
+                    </motion.span>
                   </div>
                   
                   <div className="absolute inset-0 border-2 border-[#FF7F50] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />

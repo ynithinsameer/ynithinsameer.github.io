@@ -1,9 +1,21 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Project } from "@/pages/Projects";
-import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  shortDescription: string;
+  detailedDescription: string;
+  image: string;
+  demoUrl?: string;
+  repoUrl?: string;
+  technologies: string[];
+  keyFeatures?: string[];
+  featured?: boolean;
+}
 
 interface ProjectModalProps {
   project: Project | null;
@@ -30,67 +42,88 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
               <img 
                 src={project.image} 
                 alt={project.title} 
-                className="object-cover w-full h-full"
+                className="w-full h-full object-cover"
               />
             </div>
           )}
-
+          
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold mb-2">Project Overview</h3>
-              <div className="prose prose-sm dark:prose-invert max-w-none">
-                {project.detailedDescription.split('\n').map((paragraph, idx) => (
-                  <p key={idx} className="mb-2">{paragraph}</p>
-                ))}
+              <h3 className="text-lg font-medium mb-2">Overview</h3>
+              <p className="text-muted-foreground">{project.description}</p>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-medium mb-2">Details</h3>
+              <div className="whitespace-pre-line text-muted-foreground">
+                {project.detailedDescription}
               </div>
             </div>
-
+            
             {project.keyFeatures && project.keyFeatures.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold mb-2">Key Features</h3>
-                <ul className="list-disc pl-5 space-y-1">
-                  {project.keyFeatures.map((feature, idx) => (
-                    <li key={idx}>{feature}</li>
+                <h3 className="text-lg font-medium mb-2">Key Features</h3>
+                <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
+                  {project.keyFeatures.map((feature, index) => (
+                    <motion.li 
+                      key={index}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      {feature}
+                    </motion.li>
                   ))}
                 </ul>
               </div>
             )}
-
+            
             <div>
-              <h3 className="text-lg font-semibold mb-2">Technologies</h3>
+              <h3 className="text-lg font-medium mb-2">Technologies</h3>
               <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech, idx) => (
-                  <motion.div
-                    key={tech}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: idx * 0.05 }}
+                {project.technologies.map((tech, index) => (
+                  <motion.span 
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="px-3 py-1 rounded-full text-sm bg-[#FEC6A1]/10 text-[#FEC6A1]"
                   >
-                    <Badge variant="outline" className="bg-[#FF7F50]/10 text-[#FF7F50] border-[#FF7F50]/20">
-                      {tech}
-                    </Badge>
-                  </motion.div>
+                    {tech}
+                  </motion.span>
                 ))}
               </div>
             </div>
-
-            <div className="flex justify-between pt-4">
-              {project.repoUrl && (
-                <Button variant="outline" size="sm" asChild>
-                  <a href={project.repoUrl} target="_blank" rel="noopener noreferrer">
-                    <Github className="w-4 h-4 mr-2" /> View Code
-                  </a>
+          </div>
+          
+          <div className="flex gap-4 mt-8">
+            {project.demoUrl && (
+              <a 
+                href={project.demoUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center"
+              >
+                <Button className="bg-[#FEC6A1] hover:bg-[#FEC6A1]/90 text-white group">
+                  Live Demo
+                  <ExternalLink className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
-              )}
-              
-              {project.demoUrl && (
-                <Button variant="default" size="sm" asChild className="bg-[#FF7F50] hover:bg-[#FF7F50]/90">
-                  <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="w-4 h-4 mr-2" /> Live Demo
-                  </a>
+              </a>
+            )}
+            
+            {project.repoUrl && (
+              <a 
+                href={project.repoUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center"
+              >
+                <Button variant="outline" className="border-[#FEC6A1]/20 hover:border-[#FEC6A1]/50 hover:bg-[#FEC6A1]/5 group">
+                  View Code
+                  <Github className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
-              )}
-            </div>
+              </a>
+            )}
           </div>
         </div>
       </DialogContent>

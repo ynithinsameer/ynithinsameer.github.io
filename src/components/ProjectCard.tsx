@@ -40,71 +40,68 @@ const ProjectCard = ({ project, index, onViewDetails }: ProjectCardProps) => {
   const cardStyle = transformStyles[index % transformStyles.length];
 
   return (
-    <motion.div 
-      className={`relative transition-all duration-300 ${cardStyle} ${project.featured ? 'col-span-1 md:col-span-2 lg:col-span-1' : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="group"
     >
-      <Card className={`h-full overflow-hidden ${project.featured ? 'border-[#FF7F50]' : 'border-[#FF7F50]/40 dark:border-[#FDE1D3]/40'}`}>
-        <div className="relative overflow-hidden" style={{ height: "180px" }}>
-          <img 
-            src={project.image || "/placeholder.svg"} 
-            alt={project.title}
-            className="w-full h-full object-cover transition-transform duration-700 ease-in-out"
-            style={{ transform: isHovered ? "scale(1.1)" : "scale(1)" }}
-          />
-          
-          <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
-          
+      <div 
+        className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col transform hover:-translate-y-1"
+        onClick={() => onViewDetails(project)}
+      >
+        <div className="relative h-48 overflow-hidden">
           {project.featured && (
-            <div className="absolute top-2 right-2 bg-[#FF7F50] text-white text-xs px-2 py-1 rounded-full">
-              Featured
+            <div className="absolute top-3 right-3 z-10">
+              <span className="px-3 py-1 rounded-full text-xs bg-[#FEC6A1] text-white font-medium">
+                Featured
+              </span>
             </div>
           )}
+          <img 
+            src={project.image} 
+            alt={project.title} 
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
         </div>
-
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">{project.title}</CardTitle>
-          <CardDescription className="line-clamp-2">{project.shortDescription}</CardDescription>
-        </CardHeader>
         
-        <CardContent>
-          <div className="flex flex-wrap gap-1 mt-2">
-            {project.technologies.slice(0, 3).map(tech => (
-              <span key={tech} className="text-xs px-2 py-1 rounded-full bg-[#FF7F50]/10 text-[#FF7F50]">
+        <div className="p-6 flex-grow flex flex-col">
+          <h3 className="font-bold text-xl mb-2 group-hover:text-[#FEC6A1] transition-colors">{project.title}</h3>
+          <p className="text-muted-foreground text-sm mb-4">{project.shortDescription}</p>
+          
+          <div className="flex flex-wrap gap-1 mt-auto mb-4">
+            {project.technologies.slice(0, 3).map((tech, i) => (
+              <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-[#FEC6A1]/10 text-[#FEC6A1]">
                 {tech}
               </span>
             ))}
             {project.technologies.length > 3 && (
-              <span className="text-xs px-2 py-1 rounded-full bg-[#FF7F50]/10 text-[#FF7F50]">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-[#FEC6A1]/10 text-[#FEC6A1]">
                 +{project.technologies.length - 3}
               </span>
             )}
           </div>
-        </CardContent>
-        
-        <CardFooter className="flex justify-between">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => onViewDetails(project)}
-            className="text-[#FF7F50]"
-          >
-            <Info className="w-4 h-4 mr-2" /> Details
-          </Button>
           
-          {project.demoUrl && (
-            <Button variant="outline" size="sm" asChild className="border-[#FF7F50]/40">
-              <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="w-4 h-4 mr-2" /> Demo
-              </a>
-            </Button>
-          )}
-        </CardFooter>
-      </Card>
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewDetails(project);
+            }}
+            className="flex items-center text-sm text-[#FEC6A1] hover:underline group/button"
+          >
+            Details
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-4 w-4 ml-1 transition-transform group-hover/button:translate-x-1" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </motion.div>
   );
 };
