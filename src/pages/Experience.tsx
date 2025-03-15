@@ -100,119 +100,169 @@ const ExperiencePage = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-[1fr,1.5fr] gap-8 flex-1 min-h-[600px]">
-          {/* Timeline - Left Side */}
+        {/* Desktop layout: side-by-side, Mobile layout: stacked */}
+        <div className="grid grid-cols-1 md:grid-cols-[1fr,1.5fr] gap-8 flex-1">
+          {/* Timeline - Left Side on Desktop, Top on Mobile */}
           <div className="relative overflow-hidden flex flex-col">
             {/* Timeline connecting line */}
             <div className="absolute left-[30px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#FEC6A1]/10 via-[#FEC6A1]/30 to-[#FEC6A1]/10"></div>
             
-            <div className="space-y-8 overflow-y-auto pr-4 pt-4 pl-2" style={{ maxHeight: 'calc(100vh - 250px)' }}>
+            <div className="space-y-8 overflow-y-auto pr-4 pt-4 pl-2 md:max-h-[calc(100vh-250px)]">
               {experiences.map((exp, index) => (
-                <motion.div
-                  key={exp.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="relative group"
-                  onClick={() => setActiveExperience(exp)}
-                >
-                  {/* Timeline dot */}
-                  <div className="absolute left-6 top-6 -translate-x-1/2 -translate-y-1/2 z-10">
-                    <motion.div 
-                      className={`w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
-                        activeExperience?.id === exp.id 
-                          ? 'border-[#FEC6A1] bg-[#FEC6A1]/20 scale-110' 
-                          : 'border-muted-foreground/30 bg-background group-hover:border-[#FEC6A1]/50'
-                      }`}
-                      whileHover={{ scale: 1.1 }}
-                    >
-                      <motion.div 
-                        className={`w-[8px] h-[8px] rounded-full transition-all duration-300 ${
-                          activeExperience?.id === exp.id 
-                            ? 'bg-[#FEC6A1]' 
-                            : 'bg-muted-foreground/30 group-hover:bg-[#FEC6A1]/50'
-                        }`}
-                      />
-                    </motion.div>
-                  </div>
-                  
-                  {/* Content card */}
-                  <div 
-                    className={`ml-[45px] p-5 rounded-lg cursor-pointer transition-all duration-300 transform border ${
-                      activeExperience?.id === exp.id 
-                        ? 'bg-[#FEC6A1]/5 border-[#FEC6A1] shadow-md -translate-y-1' 
-                        : 'hover:bg-card/80 border-transparent hover:border-[#FEC6A1]/20 hover:shadow-sm hover:-translate-y-0.5'
-                    }`}
+                <div key={exp.id}>
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="relative group"
+                    onClick={() => setActiveExperience(exp)}
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center">
-                        <div className={`p-2 rounded-full mr-3 ${
+                    {/* Timeline dot */}
+                    <div className="absolute left-6 top-6 -translate-x-1/2 -translate-y-1/2 z-10">
+                      <motion.div 
+                        className={`w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
                           activeExperience?.id === exp.id 
-                            ? 'bg-[#FEC6A1]/10 text-[#FEC6A1]' 
-                            : 'bg-muted/30 text-muted-foreground group-hover:bg-[#FEC6A1]/5 group-hover:text-[#FEC6A1]'
-                        }`}>
-                          <Briefcase className="w-4 h-4" />
-                        </div>
-                        <h3 className={`font-medium transition-colors ${
-                          activeExperience?.id === exp.id 
-                            ? 'text-[#FEC6A1]' 
-                            : 'group-hover:text-[#FEC6A1]'
-                        }`}>
-                          {exp.position}
-                        </h3>
-                      </div>
-                      <ChevronRight 
-                        className={`w-5 h-5 transition-transform duration-300 ${
-                          activeExperience?.id === exp.id 
-                            ? 'rotate-90 text-[#FEC6A1]' 
-                            : 'text-muted-foreground group-hover:text-[#FEC6A1]'
+                            ? 'border-[#FEC6A1] bg-[#FEC6A1]/20 scale-110' 
+                            : 'border-muted-foreground/30 bg-background group-hover:border-[#FEC6A1]/50'
                         }`}
-                      />
+                        whileHover={{ scale: 1.1 }}
+                      >
+                        <motion.div 
+                          className={`w-[8px] h-[8px] rounded-full transition-all duration-300 ${
+                            activeExperience?.id === exp.id 
+                              ? 'bg-[#FEC6A1]' 
+                              : 'bg-muted-foreground/30 group-hover:bg-[#FEC6A1]/50'
+                          }`}
+                        />
+                      </motion.div>
                     </div>
                     
-                    <div className="ml-9">
-                      <div className="flex items-center text-sm text-muted-foreground mb-2">
-                        <Calendar className="w-3.5 h-3.5 mr-1.5 inline" />
-                        <span>{exp.period}</span>
+                    {/* Content card */}
+                    <div 
+                      className={`ml-[45px] p-5 rounded-lg cursor-pointer transition-all duration-300 transform border ${
+                        activeExperience?.id === exp.id 
+                          ? 'bg-[#FEC6A1]/5 border-[#FEC6A1] shadow-md -translate-y-1' 
+                          : 'hover:bg-card/80 border-transparent hover:border-[#FEC6A1]/20 hover:shadow-sm hover:-translate-y-0.5'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center">
+                          <div className={`p-2 rounded-full mr-3 ${
+                            activeExperience?.id === exp.id 
+                              ? 'bg-[#FEC6A1]/10 text-[#FEC6A1]' 
+                              : 'bg-muted/30 text-muted-foreground group-hover:bg-[#FEC6A1]/5 group-hover:text-[#FEC6A1]'
+                          }`}>
+                            <Briefcase className="w-4 h-4" />
+                          </div>
+                          <h3 className={`font-medium transition-colors ${
+                            activeExperience?.id === exp.id 
+                              ? 'text-[#FEC6A1]' 
+                              : 'group-hover:text-[#FEC6A1]'
+                          }`}>
+                            {exp.position}
+                          </h3>
+                        </div>
+                        <ChevronRight 
+                          className={`w-5 h-5 transition-transform duration-300 ${
+                            activeExperience?.id === exp.id 
+                              ? 'rotate-90 text-[#FEC6A1]' 
+                              : 'text-muted-foreground group-hover:text-[#FEC6A1]'
+                          }`}
+                        />
                       </div>
-                      <p className="text-sm font-medium mb-1">{exp.company}</p>
-                      <p className="text-sm text-muted-foreground">{exp.description}</p>
                       
-                      {/* Preview skills */}
-                      <div className="flex flex-wrap gap-1 mt-3">
-                        {exp.skills.slice(0, 2).map((skill, idx) => (
-                          <span 
-                            key={idx} 
-                            className={`text-xs px-2 py-0.5 rounded-full ${
-                              activeExperience?.id === exp.id 
-                                ? 'bg-[#FEC6A1]/10 text-[#FEC6A1]' 
-                                : 'bg-muted/30 text-muted-foreground'
-                            }`}
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                        {exp.skills.length > 2 && (
-                          <span 
-                            className={`text-xs px-2 py-0.5 rounded-full ${
-                              activeExperience?.id === exp.id 
-                                ? 'bg-[#FEC6A1]/10 text-[#FEC6A1]' 
-                                : 'bg-muted/30 text-muted-foreground'
-                            }`}
-                          >
-                            +{exp.skills.length - 2}
-                          </span>
-                        )}
+                      <div className="ml-9">
+                        <div className="flex items-center text-sm text-muted-foreground mb-2">
+                          <Calendar className="w-3.5 h-3.5 mr-1.5 inline" />
+                          <span>{exp.period}</span>
+                        </div>
+                        <p className="text-sm font-medium mb-1">{exp.company}</p>
+                        <p className="text-sm text-muted-foreground">{exp.description}</p>
+                        
+                        {/* Preview skills */}
+                        <div className="flex flex-wrap gap-1 mt-3">
+                          {exp.skills.slice(0, 2).map((skill, idx) => (
+                            <span 
+                              key={idx} 
+                              className={`text-xs px-2 py-0.5 rounded-full ${
+                                activeExperience?.id === exp.id 
+                                  ? 'bg-[#FEC6A1]/10 text-[#FEC6A1]' 
+                                  : 'bg-muted/30 text-muted-foreground'
+                              }`}
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {exp.skills.length > 2 && (
+                            <span 
+                              className={`text-xs px-2 py-0.5 rounded-full ${
+                                activeExperience?.id === exp.id 
+                                  ? 'bg-[#FEC6A1]/10 text-[#FEC6A1]' 
+                                  : 'bg-muted/30 text-muted-foreground'
+                              }`}
+                            >
+                              +{exp.skills.length - 2}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                  
+                  {/* Mobile Experience Detail - Show directly below the selected experience */}
+                  <AnimatePresence>
+                    {activeExperience?.id === exp.id && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="md:hidden ml-[45px] mt-3 mb-6 overflow-hidden"
+                      >
+                        <div className="p-6 rounded-xl border border-[#FEC6A1]/10 bg-card/50 backdrop-blur-sm shadow-md">
+                          <div className="space-y-4">
+                            {activeExperience.detailedDescription.split('\n').map((paragraph, idx) => (
+                              paragraph.trim() && (
+                                <motion.p 
+                                  key={idx} 
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: idx * 0.1 }}
+                                  className="text-sm text-muted-foreground"
+                                >
+                                  {paragraph}
+                                </motion.p>
+                              )
+                            ))}
+                          </div>
+
+                          <div className="mt-6">
+                            <h3 className="text-sm font-medium mb-3">Skills & Technologies</h3>
+                            <div className="flex flex-wrap gap-2">
+                              {activeExperience.skills.map((skill, index) => (
+                                <motion.span
+                                  key={skill}
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                                  className="px-2.5 py-1 rounded-full text-xs bg-[#FEC6A1]/10 text-[#FEC6A1] border border-[#FEC6A1]/20"
+                                >
+                                  {skill}
+                                </motion.span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               ))}
             </div>
           </div>
 
-          {/* Experience Details - Right Side */}
-          <div className="relative h-[calc(100vh-250px)]">
+          {/* Experience Details - Right Side on Desktop, Hidden on Mobile */}
+          <div className="relative hidden md:block h-[calc(100vh-250px)]">
             <div className="sticky top-24">
               <AnimatePresence mode="wait">
                 {activeExperience && (
