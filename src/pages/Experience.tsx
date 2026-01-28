@@ -15,6 +15,35 @@ export interface Experience {
 
 const experiences: Experience[] = [
   {
+    id: 0,
+    company: "FINRA",
+    position: "Data/AI Engineer",
+    period: "Apr 2025 - Present",
+    description: "Market Regulation Technology — Surveillance Platforms",
+    detailedDescription: `I upgraded 25–30 surveillance pipelines from Amazon EMR 6.15 to 7.5 (Spark 3.5.x), resolving SQL/PySpark incompatibilities, updating dependencies, and tuning cluster configs to achieve 100% regression pass rates.
+
+I productionized FRITS (Front-Running Insider Trading Surveillance) by refactoring notebooks into parameterized PySpark jobs and publishing registered Hive/Glue tables so analysts could run repeatable workflows and query downstream data.
+
+I eliminated run‑to‑run variance in FRITS by fixing execution‑level inconsistencies across 7 modules (window ordering, join stability, timestamp normalization), achieving zero data diffs across environments.
+
+I built FRITS review dashboards in Plotly Dash and AWS QuickSight to consolidate analyst workflows and provide executive visibility into surveillance outputs.
+
+I prototyped EMR on EKS and vanilla EKS Spark with capacity‑equivalent benchmarks and Kubecost per‑job attribution, producing cost models that informed 2026 platform planning and projected ~$2.5M in savings.
+
+I built an EMR Spot Pricing Agent (Spot Advisor / “Spot Genie”) that uses spot price and availability signals to recommend capacity‑equivalent fleets, improving placement viability and enabling large‑scale cost optimization.`,
+    skills: [
+      "PySpark",
+      "Spark 3.5",
+      "AWS EMR",
+      "Hive/Glue",
+      "Plotly Dash",
+      "AWS QuickSight",
+      "EKS",
+      "Kubecost",
+      "Cost Optimization"
+    ],
+  },
+  {
     id: 1,
     company: "GMU",
     position: "Data Analyst Intern",
